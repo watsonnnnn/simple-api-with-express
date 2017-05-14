@@ -1,0 +1,17 @@
+{
+  "name": "node-blog",
+  "version": "0.0.1",
+  "description": "blog express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express"
+  ],
+  "author": "Max",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.15.2"
+  }
+}
