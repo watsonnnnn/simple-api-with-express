@@ -1,0 +1,18 @@
+//// without options
+//{
+//  "plugins": ["transform-runtime"]
+// http://blog.csdn.net/future_challenger/article/details/54648399  配置使用es6
+//}
+// with options
+{
+  "presets": ["es2015", "stage-3"],
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    ["transform-runtime", {
+      "helpers": false, // defaults to true
+      "polyfill": false, // defaults to true
+      "regenerator": true, // defaults to true
+      "moduleName": "babel-runtime" // defaults to "babel-runtime"
+    }]
+  ]
+}
