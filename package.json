@@ -4,7 +4,8 @@
   "description": "blog express",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --harmony index.js"
   },
   "keywords": [
     "express"
@@ -26,6 +27,7 @@
   "dependencies": {
     "babel-core": "^6.24.1",
     "babel-register": "^6.24.1",
-    "babel-runtime": "^6.23.0"
+    "babel-runtime": "^6.23.0",
+    "body-parser": "^1.17.2"
   }
 }
