@@ -1,6 +1,7 @@
 import express from 'express';
 import config from './src/config';
 import bodyParser from 'body-parser';
+import './src/mongo';
 
 const PORT = process.env.PORT || config.PORT;
 const app = express();
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
 
 app.use(function(err, req, res, next) {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).send(err.message);
 });
 
 app.listen(PORT,()=>{
