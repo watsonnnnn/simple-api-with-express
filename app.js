@@ -3,11 +3,13 @@ import config from './src/config';
 import bodyParser from 'body-parser';
 import './src/mongo';
 
+
 const PORT = process.env.PORT || config.PORT;
 const app = express();
 app.use(bodyParser.json());//根据req的content-type来进行解析,如果contenttype是application/json 那么这里就可以解析到
 app.use(bodyParser.urlencoded({extended:false}))//解析原始的form表单格式 ,也就是application/x-www-form-urlencoded
-
+import router from './src/routes';
+router(app);
 
 app.all('*',(req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
