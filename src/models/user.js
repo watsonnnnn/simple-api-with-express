@@ -11,7 +11,9 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    // _userId: Schema.Types.ObjectId
+    // _userId: {type: Schema.Types.ObjectId, default: new mongoose.Types.ObjectId}
 })
 const userModel = mongoose.model('blogusers', userSchema);
 

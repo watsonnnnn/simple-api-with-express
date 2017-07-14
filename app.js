@@ -1,6 +1,7 @@
 import express from 'express';
 import config from './src/config';
 import bodyParser from 'body-parser';
+import utils from 'util';
 import './src/mongo';
 
 
@@ -10,6 +11,12 @@ app.use(bodyParser.json());//根据req的content-type来进行解析,如果conte
 app.use(bodyParser.urlencoded({extended:false}))//解析原始的form表单格式 ,也就是application/x-www-form-urlencoded
 import router from './src/routes';
 router(app);
+
+
+global.clientError = (req, errorMsg) => {
+    console.log(utils.inspect({time: new Date(), 'url===>': req.originalUrl, 'error===>': errorMsg}, {colors: true}))
+    return new Error(errorMsg)
+}
 
 app.all('*',(req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
@@ -33,7 +40,6 @@ app.use((req, res, next) => {
 });
 
 app.use(function(err, req, res, next) {
-    console.error(err.stack);
     res.status(500).send(err.message);
 });
 
