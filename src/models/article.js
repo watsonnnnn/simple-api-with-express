@@ -9,7 +9,8 @@ const articleSchema = new Schema({
     content: String,
     summary: String,
     readTimes: {type: Number, default: 0},
-
+    author: {type: Schema.Types.ObjectId, ref: 'blogusers'},
+    comments: [{type: Schema.Types.ObjectId, ref: 'comment'}]
 });
 const articleModel = mongoose.model('article', articleSchema);
 
