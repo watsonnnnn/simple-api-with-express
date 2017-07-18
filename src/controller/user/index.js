@@ -3,6 +3,7 @@
  */
 
 import {userModel} from '../../models';
+import {cryptMD5} from '../../uitl/util';
 
 class User {
     // constructor(){
@@ -12,29 +13,40 @@ class User {
         let {username, password} = req.body;
 
         if(!username || !password){
-            next(clientError(req, '缺少参数'))
+            res.send(clientMsg(false, '缺少参数'));
+            return false;
         }
-        userModel.find({username, password}, (err, users) => {
+        userModel.findOne({username, password}, (err, users) => {
             if(err){
                 next(clientError(req, err.message));
             }else{
-                res.send(users)
+                if(!users){
+                    res.send(clientMsg(false, '用户名或密码有误'));
+                }else {
+                    res.send(clientMsg(true, {user: users}))
+                }
             }
         });
     }
 
     async register(req, res, next){
         let {username, password} = req.body;
+        if(!username || !password){
+            res.send(clientMsg(false, '缺少参数'));
+            return false;
+        }
         userModel.find({username},async (err, user) => {
             if(err){
-                next(clientError(req, err.message))
+                next(clientError(req, err.message));
+                return false;
             }else{
                 if(user[0]){
-                    next(clientError(req, '用户已存在'))
+                    res.send(clientMsg(false, '用户名已存在'));
                 }else{
+                    password = cryptMD5(password);
                     const result = await userModel.create({username, password});
                     if(result){
-                        res.send(result);
+                        res.send(clientMsg(true, '创建成功'));
                     }else{
                         next(clientError(req, '创建失败'));
                     }

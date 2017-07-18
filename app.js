@@ -26,6 +26,9 @@ global.clientError = (req, errorMsg) => {
     })
     return new Error(errorMsg)
 }
+global.clientMsg = (boolValue, msg) => {
+    return {success: boolValue, msg}
+}
 
 app.all('*',(req, res, next) => {
     res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
@@ -49,7 +52,7 @@ app.use((req, res, next) => {
 });
 
 app.use(function(err, req, res, next) {
-    res.status(500).send(err.message);
+    res.status(500).send({success: false, msg: err.message});
 });
 
 app.listen(PORT,()=>{
