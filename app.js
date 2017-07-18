@@ -2,6 +2,8 @@ import express from 'express';
 import config from './src/config';
 import bodyParser from 'body-parser';
 import utils from 'util';
+import fs from 'fs';
+import path from 'path';
 import './src/mongo';
 
 
@@ -14,7 +16,14 @@ router(app);
 
 
 global.clientError = (req, errorMsg) => {
-    console.log(utils.inspect({time: new Date(), 'url===>': req.originalUrl, 'error===>': errorMsg}, {colors: true}))
+    console.log(utils.inspect({time: new Date(), 'url===>': req.originalUrl, 'error===>': errorMsg}, {colors: true}));
+
+    fs.writeFile(path.resolve(__dirname, './log/app.log'),'\r\n' + new Date() + '  url===>:' + req.originalUrl + ',error===>: ' + errorMsg, {flag: 'a'}, (err) => {
+        if(err){
+            console.log('log error ..............>>>'+ err.message)
+        }else{
+        }
+    })
     return new Error(errorMsg)
 }
 
