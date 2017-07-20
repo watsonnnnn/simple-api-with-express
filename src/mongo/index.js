@@ -3,7 +3,7 @@
  */
 import mongoose from 'mongoose';
 import config from '../config';
-mongoose.connect(config.MONGO_SERVER, {server:{auto_reconnect:true}});
+mongoose.connect(config.MONGO_SERVER, {poolSize: 10, useMongoClient: true});
 const db = mongoose.connection;
 mongoose.Promise = global.Promise;
 db.once('open', () => {
