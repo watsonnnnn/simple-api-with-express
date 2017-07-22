@@ -1,4 +1,2 @@
 # node-myblog
-use node to create blog
-
-login register
+blog restful api with node
