@@ -28,7 +28,7 @@ app.all('*',(req, res, next) => {
 })
 
 app.use((req, res, next) => {
-    console.log(req.ip);
+    // console.log(req.ip);
     next();
 })
 app.use(['/article'], (req, res, next) => {

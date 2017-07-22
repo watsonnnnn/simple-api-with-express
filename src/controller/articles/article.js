@@ -10,7 +10,7 @@ class Article{
             if (!_user) {
                 next(req, '尚未登录');
             } else {
-                const docs = await articleModel.find().populate('author','username password');
+                const docs = await articleModel.find().populate('author comments.author','username password -_id').exec();
                 res.send(docs);
             }
         }catch (e){
@@ -23,7 +23,8 @@ class Article{
             let doc = await articleModel.findById(_id)
             res.send(doc);
         }catch (e){
-            next(clientError(req, e.message))
+            console.log(e.message)
+            next(clientError(req, '查看失败'))
         }
     }
     writeArticle(req, res, next){
@@ -44,18 +45,65 @@ class Article{
         let article = {title, summary, content, author: _user};
         articleModel.create(article, (err, docs) => {
             if(err){
-                next(clientError(req, err.message))
+                next(clientError(req, err.message));
             }else{
-                res.send(docs);
+                res.send(clientMsg(true, '添加成功'));
             }
         });
 
     }
-    readArticle(){
-
+    async updateArticle(req, res, next){
+        let {id, title, summary, content} = req.body;
+        if(!id){
+            next(clientError(req, '缺少id'));
+            return false;
+        }
+        let p = {};
+        title && (p.title = title);
+        summary && (p.summary = summary);
+        content && (p.content = content);
+        try {
+            const result = await articleModel.findOneAndUpdate({_id: id}, {...p, updateTime: Date.now()});
+            if(!result){
+                throw new Error('文章不存在');
+            }
+            res.send(clientMsg(true, '更新成功'));
+        }catch (e){
+            next(clientError(req, e.message));
+        }
     }
-    editArticle(){
+    async deleteArticleById(req, res, next){
+        let {id} = req.body;
+        try {
+            const result = await articleModel.findOneAndRemove ({_id: id});
+            if(!result){
+                throw new Error('文章不存在');
+            }
+            res.send(clientMsg(true, '删除成功'));
+        }catch (e){
+            next(clientError(req, e.message));
+        }
+    }
 
+    //新增文章评论并插入
+    async updateArticleComment(req, res, next){
+        let articleId = req.params.id;
+        let _user = jwt.verify(req.header('token'), 'secret').data;
+        try {
+            if(!req.body.content){
+                throw new Error('评论内容不能为空');
+            }
+            // result是find的结果
+            const result = await articleModel.findOneAndUpdate ({_id: articleId}, {$push: {comments: {content: req.body.content, author: _user}}, $set: {title: 'test title'}});
+            // console.log(result)
+            if(!result){
+                throw new Error('文章不存在')
+            }
+            res.send(clientMsg(true, "评论成功！"));
+        }catch (e){
+            console.log(e.message)
+            next(clientError(req, e.message));
+        }
     }
 }
 export default new Article();

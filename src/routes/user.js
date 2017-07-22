@@ -8,5 +8,6 @@ import User from '../controller/user';
 
 router.post('/login', User.login);
 router.post('/register', User.register);
+router.get('/articles', User.getUserArticles);
 
 export default router;

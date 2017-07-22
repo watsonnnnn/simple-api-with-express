@@ -2,7 +2,7 @@
  * Created by Administrator on 2017/7/8.
  */
 
-import {userModel} from '../../models';
+import {userModel, articleModel} from '../../models';
 import {cryptMD5} from '../../uitl/util';
 import jwt from 'jsonwebtoken';
 
@@ -55,6 +55,16 @@ class User {
                 }
             }
         })
+    }
+
+    async getUserArticles(req, res, next){
+        let _user = jwt.verify(req.header('token'), 'secret').data;
+        try {
+            const result = await articleModel.find({author: _user});
+            res.send(result);
+        }catch (e){
+            next(clientError(req, '查看失败'));
+        }
     }
 }
 export default new User();
