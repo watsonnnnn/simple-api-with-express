@@ -4,6 +4,7 @@
 
 import {userModel} from '../../models';
 import {cryptMD5} from '../../uitl/util';
+import jwt from 'jsonwebtoken';
 
 class User {
     // constructor(){
@@ -23,7 +24,8 @@ class User {
                 if(!users){
                     res.send(clientMsg(false, '用户名或密码有误'));
                 }else {
-                    res.send(clientMsg(true, {user: users}))
+                    let token = jwt.sign({exp: Math.floor(Date.now()/1000)+(60 * 60), data: users._id}, 'secret');
+                    res.send(clientMsg(true, {user: {token, username: users.username}}))
                 }
             }
         });
