@@ -20,7 +20,7 @@ class Article{
     async getArticleById(req, res, next){
         let _id = req.params.id;
         try{
-            let doc = await articleModel.findById(_id)
+            let doc = await articleModel.findByIdAndUpdate(_id, {$inc: {readTimes: 1}});
             res.send(doc);
         }catch (e){
             console.log(e.message)
