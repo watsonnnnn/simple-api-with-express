@@ -41,7 +41,7 @@ class Article{
             next(clientError(req, '内容必填'));
             return false;
         }
-        let _user = jwt.verify(req.header('token'), 'secret').data;
+        let _user = req._uid;
         let article = {title, summary, content, author: _user};
         articleModel.create(article, (err, docs) => {
             if(err){
@@ -52,6 +52,7 @@ class Article{
         });
 
     }
+    //修改文章
     async updateArticle(req, res, next){
         let {id, title, summary, content} = req.body;
         if(!id){
@@ -88,7 +89,7 @@ class Article{
     //新增文章评论并插入
     async updateArticleComment(req, res, next){
         let articleId = req.params.id;
-        let _user = jwt.verify(req.header('token'), 'secret').data;
+        let _user = req._uid;
         try {
             if(!req.body.content){
                 throw new Error('评论内容不能为空');

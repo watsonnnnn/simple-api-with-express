@@ -10,10 +10,9 @@ import fs from 'fs';
 
 const Upload = multer({storage: multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, 'uploads/images/');
     },
     filename: function(req, file, cb){
-        console.log(file)
         cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/').pop());
     }
 })});
@@ -82,8 +81,7 @@ class User {
     upload(){
        return Upload.single('avatar');
     }
-    uploadLater(req, res, next){
-        console.log(req.file.filename)
+    async uploadLater(req, res, next){
         if('image' !== req.file.mimetype.split('/').shift()){
             fs.unlink('uploads/' + req.file.filename, (err) => {
                 if(err){
@@ -93,6 +91,7 @@ class User {
                 }
             });
         }else {
+            const result = await userModel.findByIdAndUpdate(req._uid, {avatar: '/images/' + req.file.filename});
             res.send(clientMsg(true, '上传成功'));
         }
     }

@@ -1,2 +1,2 @@
-# node-myblog
-blog restful api with node
+# blog-api
+simple blog restful api with node
