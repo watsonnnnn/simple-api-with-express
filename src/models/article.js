@@ -14,6 +14,8 @@ const articleSchema = new Schema({
     // comments: [{type: Schema.Types.ObjectId, ref: 'comment'}]
     comments: [{content: String, author: {type: Schema.ObjectId, ref: 'blogusers'}, createTime: {type: Date, default: Date.now()}}]
 });
-const articleModel = mongoose.model('article', articleSchema);
+// articleSchema.index({_id: 1}); //默认索引
+
+const articleModel = mongoose.model('article', articleSchema);//实际存储到mongo中的collection名是复数 person->people article->articles
 
 export default articleModel;

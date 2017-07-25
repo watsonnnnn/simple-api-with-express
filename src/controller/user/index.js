@@ -5,6 +5,18 @@
 import {userModel, articleModel} from '../../models';
 import {cryptMD5} from '../../uitl/util';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import fs from 'fs';
+
+const Upload = multer({storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function(req, file, cb){
+        console.log(file)
+        cb(null, file.fieldname + '-' + Date.now() + '.' + file.mimetype.split('/').pop());
+    }
+})});
 
 class User {
     // constructor(){
@@ -65,6 +77,28 @@ class User {
         }catch (e){
             next(clientError(req, '查看失败'));
         }
+    }
+
+    upload(){
+       return Upload.single('avatar');
+    }
+    uploadLater(req, res, next){
+        console.log(req.file.filename)
+        if('image' !== req.file.mimetype.split('/').shift()){
+            fs.unlink('uploads/' + req.file.filename, (err) => {
+                if(err){
+                    next(clientError(req, err.message));
+                }else{
+                    next(clientError(req, '文件格式有误'))
+                }
+            });
+        }else {
+            res.send(clientMsg(true, '上传成功'));
+        }
+    }
+
+    async getUserInfo(req, res, next){
+
     }
 }
 export default new User();
